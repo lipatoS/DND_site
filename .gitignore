@@ -1,0 +1,15 @@
+# Если вы используете PostgreSQL, можете добавить резервные копии базы данных
+*.backup
+# Pycharm (если вы используете его в качестве IDE)
+.idea/
+# VS Code (если вы используете его)
+.vscode/
+
+# Virtual environment
+venv/
+*.virtualenv/
+__pycache__/
+env/
+myvenv/
+
+.vs/
