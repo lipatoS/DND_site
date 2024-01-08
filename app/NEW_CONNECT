@@ -1,0 +1,4 @@
+1) & .\myvenv\Scripts\Activate
+2) pip install -r requirements.txt
+3) cd app
+4) python manage.py runserver

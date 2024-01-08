@@ -1,3 +1,20 @@
 from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
+
+def home(request):
+    return render(request, 'home.html')
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            'username': user.username,
+            'email': user.email
+            # Другие поля пользователя, которые вы хотите передать
+        })
