@@ -35,12 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'reg',
+    'accounts',
     'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
     'rest_framework',
 ]
 SITE_ID = 1
@@ -61,7 +57,7 @@ ROOT_URLCONF = 'settings.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'reg', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'accounts', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,7 +79,7 @@ WSGI_APPLICATION = 'settings.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dnd_site_reg',
+        'NAME': 'dnd_site_db',
         'USER': 'postgres',
         'PASSWORD': 'Admin125',
         'HOST': '45.94.156.136',
@@ -130,23 +126,18 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
+SITE_URL = 'http://localhost:3000'
 
-        'APP': {
-            'client_id': '1058663925578-q3lui70q2unini269ir5bst9envutg7q.apps.googleusercontent.com',
-            'secret': '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'
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
+AUTH_USER_MODEL = 'accounts.CustomUser'
+APPEND_SLASH = False
 
-    }
-}
-ACCOUNT_EMAIL_REQUIRED = True  # Указывает, что email необходим
-ACCOUNT_EMAIL_VERIFICATION = 'optional'  # Или 'mandatory', если требуется верификация
-ACCOUNT_UNIQUE_EMAIL = True  # Указывает, что email должен быть уникальным
+# Настройка почты на gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'lipatos.games@gmail.com'
+EMAIL_HOST_PASSWORD = 'ffnw aeik qedo vzkn'
+
+HTTP_SCHEMA = "http"
+DOMAIN = "127.0.0.1:8000"
