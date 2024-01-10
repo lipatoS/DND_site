@@ -2,5 +2,19 @@ body {
     .modal {
         background: #2b2a32;
         color: white;
+
+        button {
+            margin: auto;
+        }
+
+        input {
+            color: black
+        }
+
+        [data-focus] {
+            input {
+                color:white
+            }
+        }
     }
 }

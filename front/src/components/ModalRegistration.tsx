@@ -1,6 +1,6 @@
 import React from "react";
-import { Field, Form, Formik } from "formik";
-
+import { Field, Formik } from "formik";
+import { registration } from "../api/registration";
 import {
     Modal,
     ModalOverlay,
@@ -18,84 +18,128 @@ import {
 } from "@chakra-ui/react";
 
 export const ModalRegistration = () => {
-    function validateName(value: any) {
-        let error;
-        if (!value) {
-            error = "Name is required";
-        } else if (value.toLowerCase() !== "naruto") {
-            error = "Jeez! You're not a fan 😱🎃";
-        }
-        return error;
-    }
-
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <>
-            <Button onClick={onOpen}>Open Modal</Button>
+            <Button onClick={onOpen}>Регистрация</Button>
 
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
                 <ModalOverlay />
                 <ModalContent className="modal">
-                    <ModalHeader>Modal Title</ModalHeader>
+                    <ModalHeader>Введите данные для регистрации</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <Formik
-                            initialValues={{ name: "Sasuke" }}
-                            onSubmit={(values: any, actions: any) => {
-                                setTimeout(() => {
-                                    alert(JSON.stringify(values, null, 2));
-                                    actions.setSubmitting(false);
-                                }, 1000);
+                            initialValues={{
+                                name: "",
+                                email: "",
+                                password: "",
+                            }}
+                            onSubmit={(values) => {
+                                registration(values);
                             }}
                         >
-                            {(props: any) => (
-                                <Form>
-                                    <Field name="name" validate={validateName}>
-                                        {({
-                                            field,
-                                            form,
-                                        }: {
-                                            field: any;
-                                            form: any;
-                                        }) => (
-                                            <FormControl
-                                                isInvalid={
-                                                    form.errors.name &&
-                                                    form.touched.name
-                                                }
-                                            >
-                                                <FormLabel>
-                                                    First name
-                                                </FormLabel>
-                                                <Input
-                                                    {...field}
-                                                    placeholder="name"
-                                                />
-                                                <FormErrorMessage>
-                                                    {form.errors.name}
-                                                </FormErrorMessage>
-                                            </FormControl>
-                                        )}
-                                    </Field>
-                                    <Button
-                                        mt={4}
-                                        colorScheme="teal"
-                                        isLoading={props.isSubmitting}
-                                        type="submit"
+                            {({ handleSubmit, errors, touched }) => (
+                                <form onSubmit={handleSubmit}>
+                                    <FormControl
+                                        isInvalid={
+                                            !!errors.name && touched.name
+                                        }
                                     >
-                                        Submit
-                                    </Button>
-                                </Form>
+                                        <FormLabel htmlFor="name">
+                                            Email Address
+                                        </FormLabel>
+                                        <Field
+                                            as={Input}
+                                            id="name"
+                                            name="name"
+                                            type="text"
+                                            variant="filled"
+                                            validate={(value: string) => {
+                                                let error;
+
+                                                if (!value) {
+                                                    error = "Name is required";
+                                                }
+
+                                                return error;
+                                            }}
+                                        />
+                                        <FormErrorMessage>
+                                            {errors.name}
+                                        </FormErrorMessage>
+                                    </FormControl>
+                                    <FormControl
+                                        isInvalid={
+                                            !!errors.email && touched.email
+                                        }
+                                    >
+                                        <FormLabel htmlFor="email">
+                                            Email Address
+                                        </FormLabel>
+                                        <Field
+                                            as={Input}
+                                            id="email"
+                                            name="email"
+                                            type="email"
+                                            variant="filled"
+                                            validate={(value: string) => {
+                                                let error;
+
+                                                if (!value) {
+                                                    error = "Email is required";
+                                                }
+
+                                                return error;
+                                            }}
+                                        />
+                                        <FormErrorMessage>
+                                            {errors.email}
+                                        </FormErrorMessage>
+                                    </FormControl>
+                                    <FormControl
+                                        isInvalid={
+                                            !!errors.password &&
+                                            touched.password
+                                        }
+                                    >
+                                        <FormLabel htmlFor="password">
+                                            Password
+                                        </FormLabel>
+                                        <Field
+                                            as={Input}
+                                            id="password"
+                                            name="password"
+                                            type="password"
+                                            variant="filled"
+                                            validate={(value: string) => {
+                                                let error;
+
+                                                if (value.length < 6) {
+                                                    error =
+                                                        "Password must contain at least 6 characters";
+                                                }
+
+                                                return error;
+                                            }}
+                                        />
+                                        <FormErrorMessage>
+                                            {errors.password}
+                                        </FormErrorMessage>
+                                    </FormControl>
+                                    <ModalFooter>
+                                        <Button
+                                            type="submit"
+                                            colorScheme="purple"
+                                            width="full"
+                                        >
+                                            Зарегистрироваться
+                                        </Button>
+                                    </ModalFooter>
+                                </form>
                             )}
                         </Formik>
                     </ModalBody>
-
-                    <ModalFooter>
-                        <Button colorScheme="blue" mr={3} onClick={onClose}>
-                            Close
-                        </Button>
-                        <Button variant="ghost">Secondary Action</Button>
-                    </ModalFooter>
                 </ModalContent>
             </Modal>
         </>
