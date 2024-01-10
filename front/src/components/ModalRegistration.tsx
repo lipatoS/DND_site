@@ -47,7 +47,7 @@ export const ModalRegistration = () => {
                                         }
                                     >
                                         <FormLabel htmlFor="name">
-                                            Email Address
+                                            Имя
                                         </FormLabel>
                                         <Field
                                             as={Input}
