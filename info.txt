@@ -1,6 +1,6 @@
 python -m venv myvenv - создание окружающей среды "myvenv"
 
-& .\myvenv\Scripts\Activate - что бы в неё перейти, нужно её активировать
+myvenv\Scripts\activate - что бы в неё перейти, нужно её активировать
 
 python -m pip install --upgrade pip - апгрейд всех файлов в pip
 

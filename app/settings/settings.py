@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'accounts',
     'django.contrib.sites',
     'rest_framework',
+    'corsheaders',
 ]
 SITE_ID = 1
 
@@ -50,6 +51,8 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'settings.urls'
@@ -126,6 +129,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    # Добавьте другие домены, с которых разрешен доступ
+]
+
 SITE_URL = 'http://localhost:3000'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
@@ -140,4 +150,4 @@ EMAIL_HOST_USER = 'lipatos.games@gmail.com'
 EMAIL_HOST_PASSWORD = 'ffnw aeik qedo vzkn'
 
 HTTP_SCHEMA = "http"
-DOMAIN = "127.0.0.1:8000"
+DOMAIN = "http://localhost:3000/"

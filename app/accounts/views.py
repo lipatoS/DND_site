@@ -21,6 +21,7 @@ def send_activation_email(email, activation_token):
 
 class RegistrationView(APIView):
     def post(self, request):
+        print(request)
         email = request.data.get('email')
         name = request.data.get('name')
         password = request.data.get('password')
@@ -32,7 +33,7 @@ class RegistrationView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         # Создание нового пользователя
-        user = CustomUser(first_name=name, email=email)
+        user = CustomUser(name=name, email=email)
         user.set_password(password)
         activation_token = token_gen.generate_random_token()
         user.activation_token = activation_token
