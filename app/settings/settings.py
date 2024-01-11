@@ -150,4 +150,4 @@ EMAIL_HOST_USER = 'lipatos.games@gmail.com'
 EMAIL_HOST_PASSWORD = 'ffnw aeik qedo vzkn'
 
 HTTP_SCHEMA = "http"
-DOMAIN = "http://localhost:3000/"
+DOMAIN = "127.0.0.1:8000"
