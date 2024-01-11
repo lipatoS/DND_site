@@ -7,13 +7,13 @@ from settings import settings
 CustomUser = get_user_model()
 
 
-def activate_account(activation_token):
+def activate_account(request, activation_token):
     try:
         user = CustomUser.objects.get(activation_token=activation_token)
         user.is_authenticated = True
         user.activation_token = ''
         user.save()
 
-        return redirect('http://localhost:3000/activation-success')
+        return redirect('http://localhost:3000/account')
     except ObjectDoesNotExist:
         return redirect('http://localhost:3000/page-not-found')
