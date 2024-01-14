@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Field, Formik } from "formik";
 import { registration } from "../api/registration";
 import {
@@ -19,6 +19,7 @@ import {
 
 export const ModalRegistration = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [submitTextError, setSubmitTextError] = useState(null);
     return (
         <>
             <Button onClick={onOpen}>Регистрация</Button>
@@ -36,7 +37,11 @@ export const ModalRegistration = () => {
                                 password: "",
                             }}
                             onSubmit={(values) => {
-                                registration(values);
+                                registration(values).then((response) => {
+                                    if (response.errorText) {
+                                        setSubmitTextError(response.errorText);
+                                    }
+                                });
                             }}
                         >
                             {({ handleSubmit, errors, touched }) => (
@@ -127,6 +132,9 @@ export const ModalRegistration = () => {
                                             {errors.password}
                                         </FormErrorMessage>
                                     </FormControl>
+                                    {submitTextError && (
+                                        <div>{submitTextError}</div>
+                                    )}
                                     <ModalFooter>
                                         <Button
                                             type="submit"
