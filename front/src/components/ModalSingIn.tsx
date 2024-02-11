@@ -1,5 +1,5 @@
-import React from "react";
-import { Field, Formik } from "formik";
+import React, { useState } from "react";
+import { Field, Formik, FormikHelpers } from "formik";
 import { singin } from "../api/singin";
 import {
     Modal,
@@ -16,9 +16,47 @@ import {
     FormErrorMessage,
     Input,
 } from "@chakra-ui/react";
+import { useNavigate, redirect } from "react-router-dom";
+
+interface FormData {
+    email: string;
+    password: string;
+}
 
 export const ModalSingIn = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [serverError, setServerError] = useState<{
+        errorText: string;
+    } | null>(null);
+    const navigate = useNavigate();
+    const handleSubmit = async (
+        values: FormData,
+        { setSubmitting, setErrors }: FormikHelpers<FormData>
+    ) => {
+        try {
+            // Ваш код запроса
+            const response = await singin(values);
+            if (response.status == 200) {
+                onClose();
+                navigate("/account");
+            }
+
+            // Обработка успешного ответа, если необходимо
+        } catch (error: any) {
+            console.log(error);
+            // Обработка ошибок
+            if (error.response) {
+                // Ошибка от сервера
+                setServerError(error.response.data);
+            } else {
+                // Общая ошибка
+                console.error("Ошибка при отправке запроса:", error);
+            }
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <>
             <Button onClick={onOpen}>Вход</Button>
@@ -29,14 +67,17 @@ export const ModalSingIn = () => {
                     <ModalHeader>Введите данные для входа</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
+                        {serverError && (
+                            <div style={{ color: "red", marginBottom: "10px" }}>
+                                {serverError.errorText}
+                            </div>
+                        )}
                         <Formik
                             initialValues={{
                                 email: "",
                                 password: "",
                             }}
-                            onSubmit={(values) => {
-                                singin(values);
-                            }}
+                            onSubmit={handleSubmit}
                         >
                             {({ handleSubmit, errors, touched }) => (
                                 <form onSubmit={handleSubmit}>
@@ -46,7 +87,7 @@ export const ModalSingIn = () => {
                                         }
                                     >
                                         <FormLabel htmlFor="email">
-                                            Email Address
+                                            Email
                                         </FormLabel>
                                         <Field
                                             as={Input}
@@ -58,7 +99,7 @@ export const ModalSingIn = () => {
                                                 let error;
 
                                                 if (!value) {
-                                                    error = "Email is required";
+                                                    error = "Введите email";
                                                 }
 
                                                 return error;
@@ -75,7 +116,7 @@ export const ModalSingIn = () => {
                                         }
                                     >
                                         <FormLabel htmlFor="password">
-                                            Password
+                                            Пароль
                                         </FormLabel>
                                         <Field
                                             as={Input}
@@ -87,7 +128,7 @@ export const ModalSingIn = () => {
                                                 let error;
 
                                                 if (!value) {
-                                                    error = "введите пароль";
+                                                    error = "Введите пароль";
                                                 }
 
                                                 return error;

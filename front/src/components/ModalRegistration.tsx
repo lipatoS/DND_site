@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Field, Formik } from "formik";
+import { Field, Formik, FormikHelpers, ErrorMessage } from "formik";
 import { registration } from "../api/registration";
 import {
     Modal,
@@ -17,32 +17,73 @@ import {
     Input,
 } from "@chakra-ui/react";
 
+interface FormData {
+    name: string;
+    email: string;
+    password: string;
+}
+
 export const ModalRegistration = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [submitTextError, setSubmitTextError] = useState(null);
+    const [serverError, setServerError] = useState<{
+        errorText: string;
+    } | null>(null);
+
+    const handleSubmit = async (
+        values: FormData,
+        { setSubmitting, setErrors }: FormikHelpers<FormData>
+    ) => {
+        try {
+            // Ваш код запроса
+            const response = await registration(values);
+
+            // Обработка успешного ответа, если необходимо
+        } catch (error: any) {
+            console.log(error);
+            // Обработка ошибок
+            if (error.response) {
+                // Ошибка от сервера
+                setServerError(error.response.data);
+            } else {
+                // Общая ошибка
+                console.error("Ошибка при отправке запроса:", error);
+            }
+        } finally {
+            setSubmitting(false);
+        }
+    };
     return (
         <>
             <Button onClick={onOpen}>Регистрация</Button>
 
-            <Modal isOpen={isOpen} onClose={onClose} isCentered>
+            <Modal
+                isOpen={isOpen}
+                onClose={() => {
+                    if (serverError) {
+                        setServerError(null);
+                    }
+
+                    onClose();
+                }}
+                isCentered
+            >
                 <ModalOverlay />
                 <ModalContent className="modal">
                     <ModalHeader>Введите данные для регистрации</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
+                        {serverError && (
+                            <div style={{ color: "red", marginBottom: "10px" }}>
+                                {serverError.errorText}
+                            </div>
+                        )}
                         <Formik
                             initialValues={{
                                 name: "",
                                 email: "",
                                 password: "",
                             }}
-                            onSubmit={(values) => {
-                                registration(values).then((response) => {
-                                    if (response.errorText) {
-                                        setSubmitTextError(response.errorText);
-                                    }
-                                });
-                            }}
+                            onSubmit={handleSubmit}
                         >
                             {({ handleSubmit, errors, touched }) => (
                                 <form onSubmit={handleSubmit}>
@@ -64,7 +105,7 @@ export const ModalRegistration = () => {
                                                 let error;
 
                                                 if (!value) {
-                                                    error = "Name is required";
+                                                    error = "Введите имя";
                                                 }
 
                                                 return error;
@@ -80,7 +121,7 @@ export const ModalRegistration = () => {
                                         }
                                     >
                                         <FormLabel htmlFor="email">
-                                            Email Address
+                                            Email
                                         </FormLabel>
                                         <Field
                                             as={Input}
@@ -92,7 +133,7 @@ export const ModalRegistration = () => {
                                                 let error;
 
                                                 if (!value) {
-                                                    error = "Email is required";
+                                                    error = "Введите email";
                                                 }
 
                                                 return error;
@@ -109,7 +150,7 @@ export const ModalRegistration = () => {
                                         }
                                     >
                                         <FormLabel htmlFor="password">
-                                            Password
+                                            Пароль
                                         </FormLabel>
                                         <Field
                                             as={Input}
@@ -122,7 +163,7 @@ export const ModalRegistration = () => {
 
                                                 if (value.length < 6) {
                                                     error =
-                                                        "Password must contain at least 6 characters";
+                                                        "Пароль должен сосстоять минимум из 6 символов";
                                                 }
 
                                                 return error;
@@ -132,9 +173,7 @@ export const ModalRegistration = () => {
                                             {errors.password}
                                         </FormErrorMessage>
                                     </FormControl>
-                                    {submitTextError && (
-                                        <div>{submitTextError}</div>
-                                    )}
+
                                     <ModalFooter>
                                         <Button
                                             type="submit"
