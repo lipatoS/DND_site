@@ -46,6 +46,7 @@ class RegistrationView(APIView):
                         status=status.HTTP_201_CREATED)
 
 
+User
 class LoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
